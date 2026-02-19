@@ -120,8 +120,11 @@ router.post('/', async (req, res) => {
             data: { trackingId },
         });
     } catch (error) {
-        console.error('Error submitting complaint:', error.message);
-        res.status(500).json({ error: 'Failed to submit complaint.' });
+        console.error('Error submitting complaint:', error);
+        res.status(500).json({
+            error: 'Failed to submit complaint.',
+            details: error.message
+        });
     }
 });
 

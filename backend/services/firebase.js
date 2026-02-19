@@ -16,20 +16,28 @@ if (fs.existsSync(serviceAccountPath)) {
 
 // Fallback to environment variables if file is missing or invalid
 if (!serviceAccount) {
-    if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+    const { FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL } = process.env;
+
+    if (FIREBASE_PROJECT_ID && FIREBASE_PRIVATE_KEY && FIREBASE_CLIENT_EMAIL) {
+        // Vercel sometimes wraps the key in quotes or escapes the newlines differently
+        let privateKey = FIREBASE_PRIVATE_KEY;
+        if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+            privateKey = privateKey.substring(1, privateKey.length - 1);
+        }
+        privateKey = privateKey.replace(/\\n/g, '\n');
+
         serviceAccount = {
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            projectId: FIREBASE_PROJECT_ID,
+            privateKey: privateKey,
+            clientEmail: FIREBASE_CLIENT_EMAIL,
         };
-        console.log('[Firebase] Using environment variables for initialization.');
+        console.log('[Firebase] Initializing with environment variables for Project:', FIREBASE_PROJECT_ID);
     } else {
-        console.error(
-            '[Firebase] ERROR: No serviceAccountKey.json found and environment variables are incomplete.\n' +
-            'Please set FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, and FIREBASE_CLIENT_EMAIL.'
-        );
-        // Only exit in production-like environments or if explicitly needed. 
-        // For local dev with the file, this block won't be reached.
+        console.error('[Firebase] ERROR: Environment variables are missing:', {
+            hasProjectId: !!FIREBASE_PROJECT_ID,
+            hasPrivateKey: !!FIREBASE_PRIVATE_KEY,
+            hasClientEmail: !!FIREBASE_CLIENT_EMAIL
+        });
     }
 }
 
