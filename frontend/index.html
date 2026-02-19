@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit a Complaint | Grievance Portal</title>
+  <meta name="description"
+    content="Submit your grievance securely. Get a unique tracking ID to follow up on your complaint status." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0d0f1a;
+      --surface: #141728;
+      --surface-2: #1c2035;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #6c63ff;
+      --accent-glow: rgba(108, 99, 255, 0.35);
+      --accent-2: #a78bfa;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --error: #f87171;
+      --error-bg: rgba(248, 113, 113, 0.12);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --radius: 14px;
+    }
+
+    html,
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(108, 99, 255, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 90%, rgba(167, 139, 250, 0.12) 0%, transparent 55%);
+    }
+
+    /* ── Header ──────────────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .logo-badge span {
+      font-size: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 0.6rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Card ────────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.2rem 2.4rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* ── Form Elements ───────────────────────────────────────── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .field:last-of-type {
+      margin-bottom: 0;
+    }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--muted);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    select option {
+      background: #1c2035;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+      line-height: 1.6;
+    }
+
+    /* Title field */
+    #title {
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── Submit Button ────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.8rem 0;
+    }
+
+    #submit-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--accent), #8b83ff);
+      border: none;
+      border-radius: 9px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      letter-spacing: 0.02em;
+    }
+
+    #submit-btn:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px var(--accent-glow);
+    }
+
+    #submit-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    #submit-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Result Banners ──────────────────────────────────────── */
+    .result-box {
+      margin-top: 1.6rem;
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      display: none;
+      animation: fadeSlideIn 0.35s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-box.success {
+      background: var(--success-bg);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .result-box.error {
+      background: var(--error-bg);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .result-box .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .result-box.success .label {
+      color: var(--success);
+    }
+
+    .result-box.error .label {
+      color: var(--error);
+    }
+
+    .result-box p {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .tracking-id-display {
+      margin-top: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+    }
+
+    .tracking-id-display code {
+      font-family: 'Courier New', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--success);
+      letter-spacing: 0.06em;
+    }
+
+    #copy-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    #copy-btn:hover {
+      color: var(--text);
+    }
+
+    #copy-btn title {
+      display: none;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      margin-top: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div id="navbar"></div>
+
+  <header>
+    <div class="logo-badge"><span>🛡️</span> Grievance Portal</div>
+    <h1>Submit a Complaint</h1>
+    <p>Report your concern and receive a unique tracking ID to monitor its progress.</p>
+  </header>
+
+  <div class="card">
+    <form id="complaint-form" novalidate>
+
+      <!-- Title -->
+      <div class="field">
+        <label for="title">Complaint Title</label>
+        <input type="text" id="title" name="title" placeholder="Brief subject of your complaint" required
+          autocomplete="off" />
+      </div>
+
+      <!-- Category -->
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="" disabled selected>Select a category…</option>
+          <option value="Academics">📚 Academics</option>
+          <option value="Infrastructure">🏗️ Infrastructure</option>
+          <option value="Hostel">🏠 Hostel</option>
+          <option value="Fee">💰 Fee &amp; Finance</option>
+          <option value="Staff Behaviour">🤝 Staff Behaviour</option>
+          <option value="Harassment">🚨 Harassment</option>
+          <option value="Other">💬 Other</option>
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Describe your complaint in detail…"
+          required></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Submit -->
+      <button type="submit" id="submit-btn">
+        <div class="spinner" id="spinner"></div>
+        <span id="btn-label">Submit Complaint</span>
+      </button>
+
+    </form>
+
+    <!-- Success Banner -->
+    <div class="result-box success" id="success-box">
+      <div class="label">✅ Complaint Submitted</div>
+      <p>Your complaint has been recorded successfully. Save your tracking ID below to check status anytime.</p>
+      <div class="tracking-id-display">
+        <code id="tracking-id-text">—</code>
+        <button id="copy-btn" title="Copy tracking ID" aria-label="Copy tracking ID">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Banner -->
+    <div class="result-box error" id="error-box">
+      <div class="label">⚠️ Submission Failed</div>
+      <p id="error-msg">Something went wrong. Please try again.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Grievance Redressal System &mdash; All submissions are confidential.
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

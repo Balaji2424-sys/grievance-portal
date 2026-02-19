@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Track Complaint | Grievance Portal</title>
+    <meta name="description" content="Enter your tracking ID to check the current status of your grievance." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ── Reset & Base ──────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0f1a;
+            --surface: #141728;
+            --surface-2: #1c2035;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.35);
+            --accent-2: #a78bfa;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --radius: 14px;
+
+            /* Status colours */
+            --c-pending: #f59e0b;
+            --c-progress: #3b82f6;
+            --c-resolved: #10b981;
+            --c-rejected: #f87171;
+        }
+
+        html,
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(108, 99, 255, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 90%, rgba(167, 139, 250, 0.12) 0%, transparent 55%);
+        }
+
+        /* ── Header ──────────────────────────────────────────────── */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.35rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-2);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            margin-bottom: 0.6rem;
+        }
+
+        header p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── Card ────────────────────────────────────────────────── */
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.2rem 2.4rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        /* ── Search Row ──────────────────────────────────────────── */
+        .search-row {
+            display: flex;
+            gap: 0.7rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            outline: none;
+            text-transform: uppercase;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]::placeholder {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0;
+            text-transform: none;
+            color: var(--muted);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        #track-btn {
+            flex-shrink: 0;
+            padding: 0.75rem 1.4rem;
+            background: linear-gradient(135deg, var(--accent), #8b83ff);
+            border: none;
+            border-radius: 9px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 18px var(--accent-glow);
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        #track-btn:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        #track-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        #track-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Result ──────────────────────────────────────────────── */
+        #result {
+            margin-top: 1.8rem;
+            display: none;
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Error state */
+        #result.error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.4rem;
+        }
+
+        #result.error p {
+            font-size: 0.9rem;
+            color: #fca5a5;
+        }
+
+        /* Success / status card */
+        .status-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Coloured left accent bar */
+        .status-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+            background: var(--status-color, var(--muted));
+        }
+
+        .status-card {
+            padding-left: 1.8rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--status-color, var(--muted));
+            margin-bottom: 1.1rem;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            color: var(--text);
+        }
+
+        .card-category {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 0;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .meta-item .key {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .meta-item .val {
+            font-size: 0.88rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .tracking-pill {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--accent-2);
+        }
+
+        /* ── Footer ──────────────────────────────────────────────── */
+        footer {
+            margin-top: 2rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent-2);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <header>
+        <div class="logo-badge"><span>🛡️</span> Grievance Portal</div>
+        <h1>Track Your Complaint</h1>
+        <p>Enter your tracking ID to view the current status of your grievance.</p>
+    </header>
+
+    <div class="card">
+        <label for="tracking-input">Tracking ID</label>
+        <div class="search-row">
+            <input type="text" id="tracking-input" placeholder="e.g. SEC-2026-A3KP7" maxlength="15" autocomplete="off"
+                spellcheck="false" />
+            <button id="track-btn" aria-label="Track complaint">
+                <div class="spinner" id="spinner"></div>
+                <span id="btn-label">Track</span>
+            </button>
+        </div>
+
+        <!-- Dynamic result area -->
+        <div id="result"></div>
+    </div>
+
+    <footer>
+        <a href="index.html">← Submit a new complaint</a>
+        &nbsp;&middot;&nbsp;
+        &copy; 2026 Grievance Redressal System
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/track.js"></script>
+</body>
+
+</html>

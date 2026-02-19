@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Grievance Portal</title>
+    <meta name="description" content="Admin panel to manage and update all grievance complaints." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0f1a;
+            --surface: #141728;
+            --surface-2: #1c2035;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.3);
+            --accent-2: #a78bfa;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --radius: 12px;
+        }
+
+        html,
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            background-image:
+                radial-gradient(ellipse at 15% 0%, rgba(108, 99, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 100%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
+        }
+
+        /* ── Top Nav ─────────────────────────────────────────────── */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(20, 23, 40, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-brand .badge {
+            background: linear-gradient(135deg, var(--accent), #8b83ff);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        /* ── Layout ──────────────────────────────────────────────── */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ── Page Header ─────────────────────────────────────────── */
+        .page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        #refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.55rem 1.1rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        #refresh-btn:hover {
+            border-color: var(--accent);
+            background: rgba(108, 99, 255, 0.08);
+        }
+
+        /* ── Stats Row ───────────────────────────────────────────── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--stat-color, var(--accent));
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--stat-color, var(--text));
+        }
+
+        /* ── Filter Bar ──────────────────────────────────────────── */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .filter-bar select {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 2rem 0.5rem 0.85rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-bar select:focus {
+            border-color: var(--accent);
+        }
+
+        .filter-bar select option {
+            background: #1c2035;
+        }
+
+        /* ── Table ───────────────────────────────────────────────── */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        thead th {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        tbody td {
+            padding: 0.9rem 1rem;
+            vertical-align: middle;
+        }
+
+        .tracking-code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-2);
+            letter-spacing: 0.04em;
+        }
+
+        .cell-title {
+            font-weight: 500;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cell-category {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .cell-date {
+            color: var(--muted);
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        /* Status badge in table */
+        .status-badge {
+            display: inline-block;
+            padding: 0.22rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ── Inline update controls ───────────────────────────────── */
+        .update-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .update-cell select {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 0.38rem 1.8rem 0.38rem 0.65rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.8rem;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.55rem center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .update-cell select:focus {
+            border-color: var(--accent);
+        }
+
+        .update-cell select option {
+            background: #1c2035;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--accent), #8b83ff);
+            border: none;
+            border-radius: 7px;
+            padding: 0.38rem 0.8rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.15s;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        .save-btn:hover:not(:disabled) {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ── Empty / Loading / Error states ─────────────────────── */
+        .table-state {
+            padding: 3.5rem 1rem;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .table-state .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .table-state p {
+            font-size: 0.9rem;
+        }
+
+        .table-state.error p {
+            color: #fca5a5;
+        }
+
+        /* Spinner in table area */
+        .loader {
+            width: 28px;
+            height: 28px;
+            border: 3px solid rgba(108, 99, 255, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 0.8rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Toast ────────────────────────────────────────────────── */
+        #toast {
+            position: fixed;
+            bottom: 1.8rem;
+            right: 1.8rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem 1.3rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            z-index: 100;
+            max-width: 320px;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #toast.success {
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }
+
+        #toast.error {
+            border-color: rgba(248, 113, 113, 0.4);
+            color: #fca5a5;
+        }
+
+        /* ── Responsive ──────────────────────────────────────────── */
+        @media (max-width: 700px) {
+
+            thead th:nth-child(4),
+            tbody td:nth-child(4) {
+                display: none;
+            }
+
+            /* hide Created At on mobile */
+            .cell-title {
+                max-width: 120px;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- Page header -->
+        <div class="page-header">
+            <div>
+                <h1>All Complaints</h1>
+                <p>View and manage every submitted grievance.</p>
+            </div>
+            <button id="refresh-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10" />
+                    <path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10" />
+                </svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card" style="--stat-color:#94a3b8">
+                <div class="stat-label">Total</div>
+                <div class="stat-val" id="stat-total">—</div>
+            </div>
+            <div class="stat-card" style="--stat-color:#f59e0b">
+                <div class="stat-label">Pending</div>
+                <div class="stat-val" id="stat-pending">—</div>
+            </div>
+            <div class="stat-card" style="--stat-color:#3b82f6">
+                <div class="stat-label">In Progress</div>
+                <div class="stat-val" id="stat-progress">—</div>
+            </div>
+            <div class="stat-card" style="--stat-color:#10b981">
+                <div class="stat-label">Resolved</div>
+                <div class="stat-val" id="stat-resolved">—</div>
+            </div>
+            <div class="stat-card" style="--stat-color:#f87171">
+                <div class="stat-label">Rejected</div>
+                <div class="stat-val" id="stat-rejected">—</div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-bar">
+            <label for="filter-status">Filter:</label>
+            <select id="filter-status">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Investigation">Investigation</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+            <table id="complaints-table">
+                <thead>
+                    <tr>
+                        <th>Tracking ID</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td colspan="6">
+                            <div class="table-state">
+                                <div class="loader"></div>
+                                <p>Loading complaints…</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
